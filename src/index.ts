@@ -1,38 +1,38 @@
-import { CacheType, Client, Intents, CommandInteraction } from 'discord.js';
+import { Client, Intents } from 'discord.js';
+
 import 'dotenv/config';
-
+import deleteUser from './functions/deleteUser';
+import initializeBot from './functions/init';
+import registerUser from './functions/registerUser';
+import viewBirthdays from './functions/viewBirthdays';
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-
-const init = async (interaction: CommandInteraction<CacheType>) => {
-   if (!interaction.guild) return;
-   const { id, name } = interaction.guild;
-   const guildInfo = { id, name };
-
-   
-   await interaction.reply(
-      `Initialized birthday bot and registered the following guild: ${JSON.stringify({ id, name })}`
-   );
-};
 
 client.once('ready', () => {
    console.log(`Logged in as ${client.user?.tag}`);
-
    console.log(`Now connected to:`);
-
    console.group();
-   client.guilds.cache.forEach(async guild => {
-      console.log(guild.name);
-   });
+   client.guilds.cache.forEach(async guild => console.log(guild.name));
    console.groupEnd();
 });
 
 client.on('interactionCreate', async interaction => {
    if (!interaction.isCommand()) return;
+   switch (interaction.commandName) {
+      case 'init':
+         initializeBot(interaction);
+         break;
+      case 'register':
+         registerUser(interaction);
+         break;
+      case 'birthdays':
+         viewBirthdays(interaction);
+         break;
 
-   const { commandName } = interaction;
-
-   if (commandName === 'init') {
-      await init(interaction);
+      case 'delete':
+         deleteUser(interaction);
+         break;
+      default:
+         break;
    }
 });
 

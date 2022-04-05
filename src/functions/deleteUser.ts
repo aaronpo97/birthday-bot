@@ -1,8 +1,7 @@
-import knex from '../database';
-import IUsers from '../database/types/IUsers';
 import { CacheType, CommandInteraction } from 'discord.js';
+import knex from '../database';
 
-const deleteUser = async (interaction: CommandInteraction<CacheType>) => {
+const deleteUser = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
       if (!interaction.member) return;
       const { id } = interaction.member.user;

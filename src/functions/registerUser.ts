@@ -2,7 +2,7 @@ import { CacheType, CommandInteraction } from 'discord.js';
 import knex from '../database';
 import IUsers from '../database/types/IUsers';
 
-const registerUser = async (interaction: CommandInteraction<CacheType>) => {
+const registerUser = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
       if (!interaction.guild) return;
       if (!interaction.member) return;

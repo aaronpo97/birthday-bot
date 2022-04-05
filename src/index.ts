@@ -1,18 +1,27 @@
 import { Client, Intents } from 'discord.js';
+import cron from 'node-cron';
 
 import 'dotenv/config';
 import deleteUser from './functions/deleteUser';
 import initializeBot from './functions/init';
 import registerUser from './functions/registerUser';
 import viewBirthdays from './functions/viewBirthdays';
+import logger from './util/logger';
+
+import birthdayReminder from './birthday-reminder';
+
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
-   console.log(`Logged in as ${client.user?.tag}`);
-   console.log(`Now connected to:`);
-   console.group();
-   client.guilds.cache.forEach(async guild => console.log(guild.name));
-   console.groupEnd();
+   logger.info(`Logged in as ${client.user?.tag}`);
+
+   cron.schedule('25 16 * * *', async () => {
+      try {
+         await birthdayReminder(client);
+      } catch (error) {
+         logger.error(error instanceof Error ? error.message : 'Something went wrong.');
+      }
+   });
 });
 
 client.on('interactionCreate', async interaction => {

@@ -2,7 +2,7 @@ import { CacheType, CommandInteraction } from 'discord.js';
 import knex from '../database';
 import IGuilds from '../database/types/IGuilds';
 
-const initializeBot = async (interaction: CommandInteraction<CacheType>) => {
+const initializeBot = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
       if (!interaction.guild) return;
       const { id, name: guild_name } = interaction.guild;

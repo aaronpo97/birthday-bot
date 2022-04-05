@@ -30,7 +30,6 @@ const commands = [
 
 const rest = new REST({ version: '9' }).setToken(TOKEN as string);
 
-console.log(commands);
 rest
    .put(Routes.applicationGuildCommands(APPLICATION_ID as string, GUILD_ID as string), {
       body: commands,

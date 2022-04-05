@@ -1,4 +1,5 @@
 import knex from '..';
+import logger from '../../util/logger';
 
 const clearOldDb = async (): Promise<void> => {
    await knex.schema.dropTableIfExists('users');
@@ -7,16 +8,18 @@ const clearOldDb = async (): Promise<void> => {
 const createTables = async (): Promise<void> => {
    await knex.schema
       .createTable('guilds', table => {
-         table.bigInteger('guild_id').primary();
+         table.increments('id').primary();
+         table.bigInteger('discord_guild_id');
          table.string('guild_name');
          table.datetime('joined_at', { precision: 6 }).defaultTo(knex.fn.now(6));
       })
       .createTable('users', table => {
          table.increments().primary();
-         table.bigInteger('user_id');
+         table.bigint('discord_user_id');
          table.string('username');
          table.integer('discriminator');
-         table.bigInteger('guild').references('guild_id').inTable('guilds').onDelete('cascade');
+         table.integer('guild');
+         table.foreign('guild').references('guilds.id');
          table.datetime('registered_at', { precision: 6 }).defaultTo(knex.fn.now(6));
          table.date('birthday');
       });
@@ -26,10 +29,9 @@ const createTables = async (): Promise<void> => {
    try {
       await clearOldDb();
       await createTables();
-
+      logger.info('Seeded database.');
       process.exit(0);
    } catch (error) {
-      console.log('Something went wrong 😞');
-      console.dir(error);
+      if (error instanceof Error) logger.error(error, error.message);
    }
 })();

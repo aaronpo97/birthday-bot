@@ -8,14 +8,13 @@ const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promis
    try {
       if (!interaction.guild) return;
       const { id: guildId } = interaction.guild;
-      const guild_id = parseInt(guildId);
-      const guildQuery = await knex.from('guilds').where({ guild_id }).select('*');
+      const discord_guild_id = BigInt(guildId);
+      const guildQuery = await knex.from('guilds').where({ discord_guild_id }).select('*');
       if (!guildQuery.length) {
          await interaction.reply('Your guild is not registered.');
          return;
       }
 
-      const currentGuildId = parseInt(interaction.guildId as string);
       const queriedDateString = interaction.options.getString('date');
 
       let dateQuery: Date;
@@ -39,7 +38,7 @@ const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promis
          .andWhereRaw(
             `date_part('month', birthday) = date_part('month', TIMESTAMP '${timestampQuery}')`
          )
-         .andWhereRaw(`guild = ${currentGuildId}`);
+         .andWhere({ guild: guildQuery[0].id });
 
       interaction.reply(
          `Querying birthdays for the following date: ${format(dateQuery, 'MMMM do')} \n` +

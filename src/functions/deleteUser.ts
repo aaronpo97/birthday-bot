@@ -5,7 +5,7 @@ const deleteUser = async (interaction: CommandInteraction<CacheType>): Promise<v
    try {
       if (!interaction.member) return;
       const { id } = interaction.member.user;
-      const user_id = parseInt(id);
+      const user_id = BigInt(id);
 
       await knex.delete().from('users').where({ user_id });
       await interaction.reply('Deleted user.');

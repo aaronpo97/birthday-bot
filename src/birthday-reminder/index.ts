@@ -6,7 +6,7 @@ import differenceInYears from 'date-fns/differenceInYears';
 
 const birthdayReminder = async (client: Client): Promise<void> => {
    const dateQuery: Date = new Date(Date.now());
-   const currentGuildId = '893362281923117200';
+   const currentGuildId = 1;
    const guildName = 'the lab';
    const timestampQuery = `${
       dateQuery.getMonth() + 1

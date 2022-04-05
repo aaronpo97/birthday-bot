@@ -1,5 +1,5 @@
 export default interface IUsers {
-   user_id: number;
+   discord_user_id: BigInt;
    username: string;
    birthday: Date;
    guild: number;

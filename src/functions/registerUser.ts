@@ -1,6 +1,7 @@
 import { CacheType, CommandInteraction } from 'discord.js';
 import knex from '../database';
 import IUsers from '../database/types/IUsers';
+import logger from '../util/logger';
 
 const registerUser = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
@@ -18,24 +19,25 @@ const registerUser = async (interaction: CommandInteraction<CacheType>): Promise
       const { id: guildId } = interaction.guild;
       const { id, username, discriminator } = interaction.member.user;
 
-      const user_id = parseInt(id);
-      const guild_id = parseInt(guildId);
+      const discord_user_id = BigInt(id);
+      const discord_guild_id = BigInt(guildId);
 
-      const guildQuery = await knex.from('guilds').where({ guild_id }).select('*');
+      const guildQuery = await knex.from('guilds').where({ discord_guild_id }).select('*');
       if (!guildQuery.length) {
          await interaction.reply('Your guild is not registered.');
          return;
       }
 
-      const userQuery = await knex.from('users').where({ user_id }).select('*');
+      const userQuery = await knex.from('users').where({ discord_user_id }).select('*');
       if (userQuery.length) {
          await interaction.reply('You are already registered.');
          return;
       }
 
+      logger.info(guildQuery[0].id);
       await knex<IUsers>('users').insert({
-         user_id,
-         guild: guild_id,
+         discord_user_id,
+         guild: guildQuery[0].id,
          birthday,
          discriminator: parseInt(discriminator),
          username,

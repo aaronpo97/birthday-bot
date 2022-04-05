@@ -3,6 +3,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 
 import dotenv from 'dotenv';
+import logger from '../util/logger';
 
 dotenv.config();
 
@@ -34,5 +35,9 @@ rest
    .put(Routes.applicationGuildCommands(APPLICATION_ID as string, GUILD_ID as string), {
       body: commands,
    })
-   .then(() => console.log('Successfully registered application commands.'))
-   .catch(console.error);
+   .then(() => logger.info('Successfully registered application commands.'))
+   .catch(error => {
+      if (error instanceof Error) {
+         logger.error(error.message);
+      }
+   });

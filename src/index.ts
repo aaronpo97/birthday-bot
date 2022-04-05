@@ -15,7 +15,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 client.once('ready', () => {
    logger.info(`Logged in as ${client.user?.tag}`);
 
-   cron.schedule('25 16 * * *', async () => {
+   cron.schedule('10 * * * * *', async () => {
       try {
          await birthdayReminder(client);
       } catch (error) {

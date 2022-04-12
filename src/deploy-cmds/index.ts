@@ -15,7 +15,10 @@ const commands = [
       .setName('register')
       .setDescription('Register user!')
       .addStringOption(option =>
-         option.setName('birthday').setDescription('Your birthday!').setRequired(true)
+         option
+            .setName('birthday')
+            .setDescription('Please enter your date of birth to be registered.')
+            .setRequired(true)
       ),
    new SlashCommandBuilder()
       .setName('birthdays')
@@ -26,7 +29,18 @@ const commands = [
             .setDescription('The date you would like to query for birthdays.')
             .setRequired(true)
       ),
-   new SlashCommandBuilder().setName('delete').setDescription('Delete your birthday.'),
+   new SlashCommandBuilder()
+      .setName('notifs')
+      .setDescription('Enable or disable birthday notifications.')
+      .addStringOption(option =>
+         option
+            .setName('channel')
+            .setDescription(`The channel to be assigned for birthday notifications.`)
+            .setRequired(true)
+      ),
+   new SlashCommandBuilder()
+      .setName('delete')
+      .setDescription('Delete your birthday from the database.'),
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(TOKEN as string);

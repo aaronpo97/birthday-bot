@@ -1,6 +1,7 @@
 import { CacheType, CommandInteraction } from 'discord.js';
 import knex from '../database';
 import IGuilds from '../database/types/IGuilds';
+import logger from '../util/logger';
 
 const initializeBot = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
@@ -13,10 +14,18 @@ const initializeBot = async (interaction: CommandInteraction<CacheType>): Promis
          await interaction.reply('Your guild is already registered.');
          return;
       }
-      await knex<IGuilds>('guilds').insert({ guild_name, discord_guild_id });
+      await knex<IGuilds>('guilds').insert({
+         guild_name,
+         discord_guild_id,
+         birthday_channel_id: null,
+         birthday_notifications_enabled: false,
+      });
       await interaction.reply(`Initialized the Birthday Bot in '${guild_name}'.`);
    } catch (error) {
-      await interaction.reply(`Something went wrong. 🙁 \n ${error}`);
+      if (error instanceof Error) {
+         interaction.reply(error.message);
+         logger.error('Something went wrong.');
+      }
    }
 };
 

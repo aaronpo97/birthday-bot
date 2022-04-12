@@ -9,13 +9,15 @@ const createTables = async (): Promise<void> => {
    await knex.schema
       .createTable('guilds', table => {
          table.increments('id').primary();
-         table.bigInteger('discord_guild_id');
+         table.bigInteger('discord_guild_id').unique();
          table.string('guild_name');
          table.datetime('joined_at', { precision: 6 }).defaultTo(knex.fn.now(6));
+         table.bigInteger('birthday_channel_id');
+         table.boolean('birthday_notifications_enabled');
       })
       .createTable('users', table => {
          table.increments().primary();
-         table.bigint('discord_user_id');
+         table.bigInteger('discord_user_id');
          table.string('username');
          table.integer('discriminator');
          table.integer('guild');

@@ -14,6 +14,7 @@ const registerUser = async (interaction: CommandInteraction<CacheType>): Promise
          await interaction.reply('Invalid date.');
          return;
       }
+
       const birthday = new Date(birthdayString as string);
 
       const { id: guildId } = interaction.guild;
@@ -27,7 +28,7 @@ const registerUser = async (interaction: CommandInteraction<CacheType>): Promise
          await interaction.reply('Your guild is not registered.');
          return;
       }
-
+      5;
       const userQuery = await knex.from('users').where({ discord_user_id }).select('*');
       if (userQuery.length) {
          await interaction.reply('You are already registered.');
@@ -37,15 +38,18 @@ const registerUser = async (interaction: CommandInteraction<CacheType>): Promise
       logger.info(guildQuery[0].id);
       await knex<IUsers>('users').insert({
          discord_user_id,
-         guild: guildQuery[0].id,
          birthday,
-         discriminator: parseInt(discriminator),
          username,
+         discriminator: parseInt(discriminator),
+         guild: guildQuery[0].id,
       });
 
       await interaction.reply('Registered user.');
    } catch (error) {
-      await interaction.reply(`Something went wrong. 🙁 \n ${error}`);
+      if (error instanceof Error) {
+         interaction.reply('Something went wrong.');
+         logger.error(error.message);
+      }
    }
 };
 

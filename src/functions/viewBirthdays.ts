@@ -31,7 +31,7 @@ const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promis
 
       const timestampQuery = format(dateQuery, 'MM-dd-yyyy');
 
-      const birthdays: IUsers[] = await knex
+      const birthdays: Array<IUsers> = await knex
          .select(`*`)
          .from(`users`)
          .whereRaw(`date_part('day', birthday) = date_part('day', TIMESTAMP '${timestampQuery}')`)
@@ -47,6 +47,7 @@ const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promis
    } catch (error) {
       if (error instanceof Error) {
          interaction.reply(error.message);
+         logger.error('Something went wrong.');
       }
    }
 };

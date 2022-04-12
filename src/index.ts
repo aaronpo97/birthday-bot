@@ -9,6 +9,7 @@ import viewBirthdays from './functions/viewBirthdays';
 import logger from './util/logger';
 
 import birthdayReminder from './birthday-reminder';
+import enableDisableNotifs from './functions/enableDisableNotifs';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -36,10 +37,11 @@ client.on('interactionCreate', async interaction => {
       case 'birthdays':
          viewBirthdays(interaction);
          break;
-
       case 'delete':
          deleteUser(interaction);
          break;
+      case 'notifs':
+         enableDisableNotifs(interaction);
       default:
          break;
    }

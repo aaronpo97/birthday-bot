@@ -37,6 +37,10 @@ const getAndSendGuildBirthdays = async (client: Client, guild: IGuilds): Promise
       );
    });
 
+   if (!userBirthdays.length) {
+      birthdayEmbed.setDescription('No birthdays today.');
+   }
+
    await channel.send({ embeds: [birthdayEmbed] });
 };
 

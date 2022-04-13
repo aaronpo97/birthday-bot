@@ -21,7 +21,7 @@ const birthdayReminder = async (client: Client): Promise<void> => {
    guildQuery.forEach(guild => guildPromises.push(getAndSendGuildBirthdays(client, guild)));
 
    await Promise.all(guildPromises);
-   logger.info('Sent birthday reminder.');
+   logger.info('Sent birthday reminder messages.');
 };
 
 export default birthdayReminder;

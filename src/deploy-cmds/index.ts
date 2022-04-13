@@ -30,14 +30,11 @@ const commands = [
             .setRequired(true)
       ),
    new SlashCommandBuilder()
-      .setName('notifs')
-      .setDescription('Enable or disable birthday notifications.')
-      .addStringOption(option =>
-         option
-            .setName('channel')
-            .setDescription(`The channel to be assigned for birthday notifications.`)
-            .setRequired(true)
-      ),
+      .setName('enable-notifs')
+      .setDescription('Enable birthday notifications.'),
+   new SlashCommandBuilder()
+      .setName('disable-notifs')
+      .setDescription('Disable birthday notifications.'),
    new SlashCommandBuilder()
       .setName('delete')
       .setDescription('Delete your birthday from the database.'),

@@ -9,14 +9,15 @@ import viewBirthdays from './functions/viewBirthdays';
 import logger from './util/logger';
 
 import birthdayReminder from './birthday-reminder';
-import enableDisableNotifs from './functions/enableDisableNotifs';
+import enableBirthdayNotifs from './functions/enableBirthdayNotifs';
+import disableBirthdayNotifs from './functions/disableBirthdayNotifs';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
    logger.info(`Logged in as ${client.user?.tag}`);
 
-   cron.schedule('10 * * * * *', async () => {
+   cron.schedule('* * * * *', async () => {
       try {
          await birthdayReminder(client);
       } catch (error) {
@@ -40,8 +41,12 @@ client.on('interactionCreate', async interaction => {
       case 'delete':
          deleteUser(interaction);
          break;
-      case 'notifs':
-         enableDisableNotifs(interaction);
+      case 'enable-notifs':
+         enableBirthdayNotifs(interaction);
+         break;
+      case 'disable-notifs':
+         disableBirthdayNotifs(interaction);
+         break;
       default:
          break;
    }

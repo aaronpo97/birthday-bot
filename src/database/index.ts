@@ -3,11 +3,12 @@ dotenv.config();
 
 import knex from 'knex';
 
-const { DATABASE: database, HOST: host, PASSWORD: password, PORT: port, USER: user } = process.env;
+const { PG_CONNECTION_STRING } = process.env;
 
 const pg = knex({
    client: 'pg',
-   connection: { database, host, password, user, port: parseInt(port as string) },
+   connection: PG_CONNECTION_STRING,
+   searchPath: ['knex', 'public'],
 });
 
 export default pg;

@@ -1,41 +1,27 @@
-import IUsers from '../database/types/IUsers';
-import { TextChannel, Client, MessageEmbed, Message } from 'discord.js';
-import pg from '../database';
+import { Client } from 'discord.js';
 
-import differenceInYears from 'date-fns/differenceInYears';
+import IGuilds from '../database/types/IGuilds';
+import pg from '../database';
+import logger from '../util/logger';
+import getAndSendGuildBirthdays from './utils/getAndSendGuildBirthdays';
 
 const birthdayReminder = async (client: Client): Promise<void> => {
-   const dateQuery: Date = new Date(Date.now());
-   const currentGuildId = 1;
-   const guildName = 'the lab';
-   const timestampQuery = `${
-      dateQuery.getMonth() + 1
-   }/${dateQuery.getDate()}/${dateQuery.getFullYear()}`;
+   const guildQuery: ReadonlyArray<IGuilds> = await pg
+      .select('*')
+      .from('guilds')
+      .where({ birthday_notifications_enabled: true })
+      .andWhereRaw('birthday_channel_id IS NOT null');
 
-   const birthdays: IUsers[] = await pg
-      .select(`*`)
-      .from(`users`)
-      .whereRaw(`date_part('day', birthday) = date_part('day', TIMESTAMP '${timestampQuery}')`)
-      .andWhereRaw(
-         `date_part('month', birthday) = date_part('month', TIMESTAMP '${timestampQuery}')`
-      )
-      .andWhereRaw(`guild = ${currentGuildId}`);
+   if (!guildQuery.length) {
+      return;
+   }
 
-   const channel = client.channels.cache.get('893541963868012584') as TextChannel;
+   const guildPromises: Array<Promise<void>> = [];
 
-   const birthdayEmbed = new MessageEmbed()
-      .setColor('#ffffff')
-      .setTitle(`Today's birthdays in ${guildName}:`);
+   guildQuery.forEach(guild => guildPromises.push(getAndSendGuildBirthdays(client, guild)));
 
-   birthdays.forEach(user => {
-      const { username, discriminator, birthday } = user;
-      birthdayEmbed.addField(
-         `${username}#${discriminator}`,
-         `Age: ${differenceInYears(new Date(), birthday)}`
-      );
-   });
-
-   channel.send({ embeds: [birthdayEmbed] });
+   await Promise.all(guildPromises);
+   logger.info('Sent birthday reminder.');
 };
 
 export default birthdayReminder;

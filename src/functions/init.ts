@@ -7,9 +7,13 @@ const initializeBot = async (interaction: CommandInteraction<CacheType>): Promis
    try {
       if (!interaction.guild) return;
       const { id, name: guild_name } = interaction.guild;
-
       const discord_guild_id = BigInt(id);
-      const guildQuery = await knex.from('guilds').where({ discord_guild_id }).select('*');
+
+      const guildQuery: ReadonlyArray<IGuilds> = await knex
+         .from('guilds')
+         .where({ discord_guild_id })
+         .select('*');
+
       if (guildQuery.length) {
          await interaction.reply('Your guild is already registered.');
          return;

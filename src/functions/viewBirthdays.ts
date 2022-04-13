@@ -4,34 +4,34 @@ import { CacheType, CommandInteraction } from 'discord.js';
 import logger from '../util/logger';
 
 import format from 'date-fns/format';
+import IGuilds from '../database/types/IGuilds';
 const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
       if (!interaction.guild) return;
       const { id: guildId } = interaction.guild;
       const discord_guild_id = BigInt(guildId);
-      const guildQuery = await knex.from('guilds').where({ discord_guild_id }).select('*');
+      const guildQuery: ReadonlyArray<IGuilds> = await knex
+         .from('guilds')
+         .where({ discord_guild_id })
+         .select('*');
+
       if (!guildQuery.length) {
          await interaction.reply('Your guild is not registered.');
          return;
       }
 
-      const queriedDateString = interaction.options.getString('date');
+      const queriedDateString = interaction.options.getString('date') as string;
+      const dateQuery = new Date(
+         queriedDateString.toLowerCase() === 'today' ? Date.now() : queriedDateString
+      );
 
-      let dateQuery: Date;
-
-      if (queriedDateString === 'today') {
-         dateQuery = new Date(Date.now());
-      } else {
-         dateQuery = new Date(queriedDateString as string);
-
-         if (!dateQuery.getTime()) {
-            throw new Error('Invalid date.');
-         }
+      if (!dateQuery.getTime()) {
+         throw new Error('Invalid date.');
       }
 
       const timestampQuery = format(dateQuery, 'MM-dd-yyyy');
 
-      const birthdays: Array<IUsers> = await knex
+      const birthdays: ReadonlyArray<IUsers> = await knex
          .select(`*`)
          .from(`users`)
          .whereRaw(`date_part('day', birthday) = date_part('day', TIMESTAMP '${timestampQuery}')`)

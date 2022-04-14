@@ -3,7 +3,7 @@
 
 ## About
 
-An applicaiton using Node, Typescript, Supabase, and the Discord API for the purposes of tracking members' birthdays for community engagement.
+An application using Node, Typescript, Supabase, and the Discord API for the purposes of tracking members' birthdays for community engagement.
 
 ## Disclaimer
 

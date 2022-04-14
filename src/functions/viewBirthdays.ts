@@ -1,13 +1,17 @@
 import knex from '../database';
 import IUsers from '../database/types/IUsers';
-import { CacheType, CommandInteraction } from 'discord.js';
+import { CacheType, Client, CommandInteraction, MessageEmbed } from 'discord.js';
 import logger from '../util/logger';
 
 import format from 'date-fns/format';
 import IGuilds from '../database/types/IGuilds';
-const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
+const viewBirthdays = async (
+   interaction: CommandInteraction<CacheType>,
+   client: Client
+): Promise<void> => {
    try {
       if (!interaction.guild) return;
+
       const { id: guildId } = interaction.guild;
       const discord_guild_id = BigInt(guildId);
       const guildQuery: ReadonlyArray<IGuilds> = await knex
@@ -40,14 +44,21 @@ const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promis
          )
          .andWhere({ guild: guildQuery[0].id });
 
-      interaction.reply(
-         `Querying birthdays for the following date: ${format(dateQuery, 'MMMM do')} \n` +
-            JSON.stringify(birthdays)
-      );
+      const birthdayEmbed = new MessageEmbed()
+         .setColor('#ffffff')
+         .setTitle(`Birthdays on ${format(dateQuery, 'MMMM do')}:`);
+
+      if (!birthdays.length) {
+         birthdayEmbed.setDescription('No birthdays that day. 🙁');
+      }
+      birthdays.forEach(user => {
+         birthdayEmbed.addField(`${user.username}#${user.discriminator}`, '');
+      });
+
+      await interaction.reply({ embeds: [birthdayEmbed] });
    } catch (error) {
       if (error instanceof Error) {
-         interaction.reply(error.message);
-         logger.error('Something went wrong.');
+         logger.error(error.message);
       }
    }
 };

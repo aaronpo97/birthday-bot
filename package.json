@@ -5,7 +5,7 @@
    "scripts": {
       "dev": "npx ts-node ./src/database/seed && npx ts-node ./src/deploy-cmds && nodemon",
       "prestart": "tsc",
-      "start": "node ./build"
+      "start": "node ./dist"
    },
    "keywords": [],
    "author": "",

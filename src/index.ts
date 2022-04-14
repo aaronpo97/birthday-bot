@@ -11,13 +11,15 @@ import logger from './util/logger';
 import birthdayReminder from './birthday-reminder';
 import enableBirthdayNotifs from './functions/enableBirthdayNotifs';
 import disableBirthdayNotifs from './functions/disableBirthdayNotifs';
+import triggerNotif from './functions/triggerNotif';
+import help from './functions/help';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 client.once('ready', () => {
    logger.info(`Logged in as ${client.user?.tag}`);
 
-   cron.schedule('0 0,3,6,9,12,15,18,21 * * *', async () => {
+   cron.schedule('* */3 * * *', async () => {
       try {
          await birthdayReminder(client);
       } catch (error) {
@@ -30,22 +32,28 @@ client.on('interactionCreate', async interaction => {
    if (!interaction.isCommand()) return;
    switch (interaction.commandName) {
       case 'init':
-         initializeBot(interaction);
+         await initializeBot(interaction);
          break;
       case 'register':
-         registerUser(interaction);
+         await registerUser(interaction);
          break;
       case 'birthdays':
-         viewBirthdays(interaction);
+         await viewBirthdays(interaction, client);
          break;
       case 'delete':
          deleteUser(interaction);
          break;
       case 'enable-notifs':
-         enableBirthdayNotifs(interaction);
+         await enableBirthdayNotifs(interaction);
          break;
       case 'disable-notifs':
-         disableBirthdayNotifs(interaction);
+         await disableBirthdayNotifs(interaction);
+         break;
+      case 'trigger-notif':
+         await triggerNotif(interaction, client);
+         break;
+      case 'help':
+         await help(interaction);
          break;
       default:
          break;

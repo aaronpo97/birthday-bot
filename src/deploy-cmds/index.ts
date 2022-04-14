@@ -38,6 +38,9 @@ const commands = [
    new SlashCommandBuilder()
       .setName('delete')
       .setDescription('Delete your birthday from the database.'),
+   new SlashCommandBuilder()
+      .setName('trigger-notif')
+      .setDescription('Trigger a birthday notification to the birthday channel.'),
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(TOKEN as string);

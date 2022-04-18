@@ -12,7 +12,6 @@ import birthdayReminder from './birthday-reminder';
 import enableBirthdayNotifs from './functions/enableBirthdayNotifs';
 import disableBirthdayNotifs from './functions/disableBirthdayNotifs';
 import triggerNotif from './functions/triggerNotif';
-import help from './functions/help';
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
@@ -38,7 +37,7 @@ client.on('interactionCreate', async interaction => {
          await registerUser(interaction);
          break;
       case 'birthdays':
-         await viewBirthdays(interaction, client);
+         await viewBirthdays(interaction);
          break;
       case 'delete':
          deleteUser(interaction);
@@ -51,9 +50,6 @@ client.on('interactionCreate', async interaction => {
          break;
       case 'trigger-notif':
          await triggerNotif(interaction, client);
-         break;
-      case 'help':
-         await help(interaction);
          break;
       default:
          break;

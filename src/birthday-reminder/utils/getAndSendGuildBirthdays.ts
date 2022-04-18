@@ -27,7 +27,8 @@ const getAndSendGuildBirthdays = async (client: Client, guild: IGuilds): Promise
 
    const birthdayEmbed = new MessageEmbed()
       .setColor('#ffffff')
-      .setTitle(`Today's birthdays in ${guild_name}:`);
+      .setTitle(`Today's birthdays in ${guild_name}:`)
+      .setTimestamp();
 
    userBirthdays.forEach(user => {
       const { username, discriminator, birthday } = user;

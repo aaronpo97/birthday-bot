@@ -29,7 +29,8 @@ const disableBirthdayNotifs = async (interaction: CommandInteraction<CacheType>)
          birthday_channel_id: null,
       });
 
-      interaction.reply('Your server now has birthday notifications disabled.');
+      await interaction.guild.channels.cache.get(birthday_channel_id.toString())?.delete();
+      await interaction.reply('Your server now has birthday notifications disabled.');
    } catch (error) {
       if (error instanceof Error) {
          interaction.reply('Something went wrong!');

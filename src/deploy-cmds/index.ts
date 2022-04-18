@@ -52,6 +52,6 @@ rest
    .then(() => logger.info('Successfully registered application commands.'))
    .catch(error => {
       if (error instanceof Error) {
-         logger.error(error.message);
+         logger.error(error.stack);
       }
    });

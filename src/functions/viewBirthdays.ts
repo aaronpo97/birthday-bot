@@ -1,14 +1,11 @@
 import knex from '../database';
 import IUsers from '../database/types/IUsers';
-import { CacheType, Client, CommandInteraction, MessageEmbed } from 'discord.js';
+import { CacheType, CommandInteraction, MessageEmbed } from 'discord.js';
 import logger from '../util/logger';
 
 import format from 'date-fns/format';
 import IGuilds from '../database/types/IGuilds';
-const viewBirthdays = async (
-   interaction: CommandInteraction<CacheType>,
-   client: Client
-): Promise<void> => {
+const viewBirthdays = async (interaction: CommandInteraction<CacheType>): Promise<void> => {
    try {
       if (!interaction.guild) return;
 
@@ -35,7 +32,7 @@ const viewBirthdays = async (
 
       const timestampQuery = format(dateQuery, 'MM-dd-yyyy');
 
-      const birthdays: ReadonlyArray<IUsers> = await knex
+      const queriedUserBirthdays: ReadonlyArray<IUsers> = await knex
          .select(`*`)
          .from(`users`)
          .whereRaw(`date_part('day', birthday) = date_part('day', TIMESTAMP '${timestampQuery}')`)
@@ -48,10 +45,10 @@ const viewBirthdays = async (
          .setColor('#ffffff')
          .setTitle(`Birthdays on ${format(dateQuery, 'MMMM do')}:`);
 
-      if (!birthdays.length) {
+      if (!queriedUserBirthdays.length) {
          birthdayEmbed.setDescription('No birthdays that day. 🙁');
       }
-      birthdays.forEach(user => {
+      queriedUserBirthdays.forEach(user => {
          birthdayEmbed.addField(`${user.username}#${user.discriminator}`, '');
       });
 

@@ -12,7 +12,7 @@ const createTables = async (): Promise<void> => {
          table.bigInteger('discord_guild_id').unique().notNullable();
          table.string('guild_name').notNullable();
          table.datetime('joined_at', { precision: 6 }).defaultTo(knex.fn.now(6)).notNullable();
-         table.bigInteger('birthday_channel_id').notNullable();
+         table.bigInteger('birthday_channel_id');
          table.boolean('birthday_notifications_enabled').notNullable();
       })
       .createTable('users', table => {

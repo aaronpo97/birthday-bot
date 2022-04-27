@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import knex from '../database';
+
 import IGuilds from '../database/types/IGuilds';
 import IUsers from '../database/types/IUsers';
 import logger from '../util/logger';
@@ -16,6 +17,7 @@ const registerUser: ICommands = {
         .setDescription('Please enter your date of birth to be registered.')
         .setRequired(true),
     ) as SlashCommandBuilder,
+
   async execute(interaction: CommandInteraction<CacheType>) {
     try {
       if (!interaction.guild) return;
@@ -51,6 +53,7 @@ const registerUser: ICommands = {
         .where({ discord_user_id })
         .andWhere({ guild: guildQuery[0].id })
         .select('*');
+
       if (userQuery.length) {
         await interaction.reply('You are already registered.');
         return;

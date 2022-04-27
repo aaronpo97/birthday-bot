@@ -9,6 +9,7 @@ const deleteUser: ICommands = {
   data: new SlashCommandBuilder()
     .setName('delete')
     .setDescription('Deletes the user in the Birthday Database for the current active guild.'),
+
   async execute(interaction: CommandInteraction<CacheType>) {
     try {
       if (!interaction.member) return;

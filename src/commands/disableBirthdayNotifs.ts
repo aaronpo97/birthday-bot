@@ -9,6 +9,7 @@ const disableBirthdayNotifs: ICommands = {
   data: new SlashCommandBuilder()
     .setName('disable-birthday-notifs')
     .setDescription('Turns off the periodic birthday notifications that send every 3 hours.'),
+
   async execute(interaction: CommandInteraction<CacheType>) {
     try {
       if (!interaction.guild) return;
